@@ -3,6 +3,7 @@
 # 运行截图:
 
 ![pygame](https://github.com/wdkang123/PygameGoBang/blob/master/PygameGoBang/img-folder/window1.png)
+![pygame](https://github.com/wdkang123/PygameGoBang/blob/master/PygameGoBang/img-folder/window2.png)
 
 # PygameGoBang
 Pygame,GoBang,五子棋,
