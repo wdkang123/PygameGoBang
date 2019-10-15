@@ -1,3 +1,9 @@
+# Pygame实现的五子棋 方向键移动格子 空格键落子
+
+# 运行截图:
+
+![pygame](https://github.com/wdkang123/PygameGoBang/blob/master/PygameGoBang/img-folder/window1.png)
+
 # PygameGoBang
 Pygame,GoBang,五子棋,
 
