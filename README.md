@@ -1,52 +1,130 @@
-# `Pygame` 五子棋 单机/联机
+# PygameGoBang — AI Gomoku Platform
 
-## 运行截图:
+A modern, modular Gomoku (Five-in-a-Row) platform built with Python, featuring pluggable AI engines, real-time coaching, game replay analysis, and a FastAPI service layer.
 
-![pygame](https://github.com/wdkang123/PygameGoBang/blob/master/PygameGoBang/img-folder/window1.png)
-![pygame](https://github.com/wdkang123/PygameGoBang/blob/master/PygameGoBang/img-folder/window2.png)
+---
 
+## Features
 
+- **Modular Architecture** — Core game logic fully decoupled from UI; pure Python, no pygame dependency in engine
+- **Multiple AI Bots** — `RandomBot`, `HeuristicBot`, `MiniMaxBot` (with alpha-beta pruning)
+- **AI Coach** — Real-time position analysis with structured advice output
+- **Game Replay** — JSON-based recording, serialization, and post-game analysis
+- **FastAPI Service** — REST API for game control and analysis endpoints
+- **Quality Gates** — pytest, ruff, black, mypy, pre-commit, GitHub Actions CI
+- **Extensible** — Unified `Bot` ABC interface for adding new AI engines
 
-## 两个版本:
+---
 
-### 1 单机版(两个人一台电脑)
+## Quick Start
 
-文件夹  `PygameGoBang` 下
+```bash
+# Install
+pip install -e .
+pip install -e ".[dev]"    # with dev tools
 
-直接启动即可
+# Desktop UI
+python -m pygobang.app.main                        # human vs human
+python -m pygobang.app.main --opponent heuristic   # vs heuristic AI
+python -m pygobang.app.main --opponent minimax --depth 4
 
+# API server
+make api   # or: python scripts/run_api.py
+# Then visit http://localhost:8000/docs for Swagger UI
 
+# Tests
+make test    # pytest
+make check   # format + lint + test
+make benchmark
+```
 
-### 2 联机版(两台电脑两个人)
+---
 
-文件夹`PygameGoBang(LAN)` 下
+## Architecture
 
-#### 1 启动Server
+```
+src/pygobang/
+├── core/          # Board, Rules, Game, Move — pure game logic
+├── engine/        # Evaluator, Patterns, CandidateGenerator — AI infrastructure
+├── ai/            # Bot implementations + Advisor
+├── replay/        # Recorder, Serializer, Parser, ReplayAnalyzer
+├── ui/            # Pygame application
+├── api/           # FastAPI service (game + analysis routes)
+├── infra/         # Logger, Config
+└── app/           # Entry point
+```
 
-确定自己的局域网IP地址
+---
 
-打开`server.py`
+## AI Bots
 
-修改当中的`ip`和`port`为自己本机的IP 地址可以默认
+| Bot | Description |
+|-----|-------------|
+| `RandomBot` | Random valid move |
+| `HeuristicBot` | Pattern evaluation + greedy selection |
+| `MiniMaxBot` | Minimax + Alpha-Beta pruning, configurable depth |
 
- `self.server.bind(("192.168.1.254", 8888))`
+---
 
+## API Endpoints
 
+```
+POST /game/new               — Start new game
+POST /game/{id}/move        — Place piece
+GET  /game/{id}             — Get game state
+POST /analysis/step         — Analyze current position
+POST /analysis/replay        — Analyze saved replay
+GET  /health                — Health check
+```
 
-#### 2 启动 Client
+Example — step analysis:
+```bash
+curl -X POST http://localhost:8000/analysis/step \
+  -H "Content-Type: application/json" \
+  -d '{"board": [0]*225, "current_role": 1, "board_size": 15}'
+```
 
-你需要和Server在一个服务器下
+---
 
-打开`Client.py`
+## Replay Format
 
-修改当中的ip和port为Server的地址和端口
+Games are saved as JSON:
 
-`self.client.connect(("192.168.1.254", 8888))`
+```json
+{
+  "meta": {
+    "board_size": 15,
+    "black_player": "heuristic",
+    "white_player": "human"
+  },
+  "moves": [
+    {"step": 1, "x": 7, "y": 7, "role": 1},
+    {"step": 2, "x": 7, "y": 8, "role": 2}
+  ],
+  "result": {"winner": 1, "reason": "five_in_a_row"}
+}
+```
 
+---
 
+## Benchmark
 
-#### 3 首先运行Server 再运行Client
+```bash
+python scripts/run_benchmark.py
+```
 
-即可开始游戏
+---
 
-当一方失败后 双方按下空格 即可重新开始一局
+## Roadmap
+
+- [x] M1: Architecture refactor (core/engine/ai/replay separation)
+- [x] M2: AI bots (Random, Heuristic)
+- [x] M3: Minimax + Alpha-Beta
+- [x] M4: AI Coach + Replay Analyzer
+- [x] M5: FastAPI service layer
+
+---
+
+## License
+
+MIT

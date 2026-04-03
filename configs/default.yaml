@@ -1,0 +1,15 @@
+board_size: 15
+grid_size: 20
+fps: 30
+
+ai:
+  max_depth: 4
+  max_candidates: 12
+  time_limit_ms: 5000
+
+ui:
+  window_width: 380
+  window_height: 320
+
+replay:
+  save_dir: replays

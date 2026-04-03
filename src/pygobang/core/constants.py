@@ -1,0 +1,9 @@
+"""Game constants."""
+
+EMPTY = 0
+BLACK = 1
+WHITE = 2
+
+BOARD_SIZE = 15
+GRID_SIZE = 20
+WINDOW_SIZE = BOARD_SIZE * GRID_SIZE + 2
